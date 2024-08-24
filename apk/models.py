@@ -1,5 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
+import random
+import string
+
+def generate_unique_id(cooperative_name, username):
+    unique_digits = ''.join(random.choices(string.digits, k=4))
+    return f"{cooperative_name}_{username}_{unique_digits}"
 
 
 class Producteur(models.Model):
@@ -64,6 +71,18 @@ class Producteur(models.Model):
         help_text="Village où réside le producteur.",
     )
 
+    date_creation = models.DateTimeField(
+        auto_now_add=True, verbose_name="Date de Création"
+    )
+    date_modification = models.DateTimeField(
+        auto_now=True, verbose_name="Date de Modification"
+    )
+
+    def save(self, *args, **kwargs):
+        if not self.identifiant_unique:
+            self.identifiant_unique = generate_unique_id(self.cooperative.nom, self.user.username)
+        super().save(*args, **kwargs)
+
     class Meta:
         verbose_name = "Producteur"
         verbose_name_plural = "Producteurs"
@@ -99,6 +118,14 @@ class Parcelle(models.Model):
         verbose_name="Âge Moyen des Arbres",
         help_text="Âge moyen des arbres sur la parcelle.",
     )
+
+    date_creation = models.DateTimeField(
+        auto_now_add=True, verbose_name="Date de Création"
+    )
+    date_modification = models.DateTimeField(
+        auto_now=True, verbose_name="Date de Modification"
+    )
+
 
     class Meta:
         verbose_name = "Parcelle"
@@ -177,6 +204,13 @@ class Coopérative(models.Model):
         help_text="Liste des producteurs membres de la coopérative.",
     )
 
+    date_creation = models.DateTimeField(
+        auto_now_add=True, verbose_name="Date de Création"
+    )
+    date_modification = models.DateTimeField(
+        auto_now=True, verbose_name="Date de Modification"
+    )
+
     class Meta:
         verbose_name = "Coopérative"
         verbose_name_plural = "Coopératives"
@@ -229,6 +263,13 @@ class Lot(models.Model):
         help_text="Date à laquelle le lot de cacao a été livré à la coopérative.",
     )
 
+    date_creation = models.DateTimeField(
+        auto_now_add=True, verbose_name="Date de Création"
+    )
+    date_modification = models.DateTimeField(
+        auto_now=True, verbose_name="Date de Modification"
+    )
+
     class Meta:
         verbose_name = "Lot"
         verbose_name_plural = "Lots"
@@ -247,6 +288,13 @@ class Sac(models.Model):
         help_text="QR code permettant de tracer le sac et les lots qu'il contient.",
     )
 
+    date_creation = models.DateTimeField(
+        auto_now_add=True, verbose_name="Date de Création"
+    )
+    date_modification = models.DateTimeField(
+        auto_now=True, verbose_name="Date de Modification"
+    )
+
     class Meta:
         verbose_name = "Sac"
         verbose_name_plural = "Sacs"
@@ -259,7 +307,7 @@ class Acheteur(models.Model):
     prenom = models.CharField(
         max_length=100, verbose_name="Prénom", help_text="Prénom de l'acheteur."
     )
-    type = models.CharField(
+    type_acheteur = models.CharField(
         max_length=50,
         verbose_name="Type",
         help_text="Type de l'acheteur (LBA, Exportateur, etc.).",
@@ -294,6 +342,13 @@ class Acheteur(models.Model):
         related_name="acheteurs",
         verbose_name="Sacs",
         help_text="Sacs de cacao achetés par l'acheteur.",
+    )
+
+    date_creation = models.DateTimeField(
+        auto_now_add=True, verbose_name="Date de Création"
+    )
+    date_modification = models.DateTimeField(
+        auto_now=True, verbose_name="Date de Modification"
     )
 
     class Meta:
