@@ -26,7 +26,7 @@ class CooperativeAdmin(admin.ModelAdmin):
     list_filter = ('region', 'type_cooperative', 'date_creation')
     ordering = ('-date_creation',)
     readonly_fields = ('date_creation', 'date_modification')
-
+    
 
 @admin.register(Lot)
 class LotAdmin(admin.ModelAdmin):
