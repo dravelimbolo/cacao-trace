@@ -4,9 +4,9 @@ from django.utils import timezone
 import random
 import string
 
-def generate_unique_id(cooperative_name, username):
+def generate_unique_id( ):
     unique_digits = ''.join(random.choices(string.digits, k=4))
-    return f"{cooperative_name}_{username}_{unique_digits}"
+    return f"{unique_digits}"
 
 
 class Producteur(models.Model):
@@ -80,7 +80,7 @@ class Producteur(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.identifiant_unique:
-            self.identifiant_unique = generate_unique_id(self.cooperative.nom, self.user.username)
+            self.identifiant_unique = generate_unique_id()
         super().save(*args, **kwargs)
 
     class Meta:
